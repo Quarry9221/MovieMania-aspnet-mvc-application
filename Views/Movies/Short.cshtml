@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Movie>
+@{
+    ViewData["Title"] = "List of Movies";
+}
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="border-primary" style="background: grey">
+            <div class="card" style="max-width: 1080px;">
+                <div class="row g-0">
+                        <div class="">
+                            <p class="card-text">
+                                <h5 class="card-title">
+                                    @item.Name
+                                    <a class="text-white float-right"><i class="bi bi-pencil-square"></i></a>
+                                </h5>
+                            </p>
+                            <div class="col-md-6">
+                                <img src="@item.ImageURL" width="10%" alt="@item.Name">
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
