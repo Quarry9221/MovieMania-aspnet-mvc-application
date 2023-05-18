@@ -471,13 +471,13 @@ namespace MovieMania.Migrations
             modelBuilder.Entity("MovieMania.Models.Genre_Movie", b =>
                 {
                     b.HasOne("MovieMania.Models.Genres", "Genre")
-                        .WithMany("Genremovies")
+                        .WithMany("GenreMovies")
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MovieMania.Models.Movie", "Movie")
-                        .WithMany("Genremovies")
+                        .WithMany("GenreMovies")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -524,14 +524,14 @@ namespace MovieMania.Migrations
 
             modelBuilder.Entity("MovieMania.Models.Genres", b =>
                 {
-                    b.Navigation("Genremovies");
+                    b.Navigation("GenreMovies");
                 });
 
             modelBuilder.Entity("MovieMania.Models.Movie", b =>
                 {
                     b.Navigation("Actors_Movies");
 
-                    b.Navigation("Genremovies");
+                    b.Navigation("GenreMovies");
 
                     b.Navigation("Likes")
                         .IsRequired();

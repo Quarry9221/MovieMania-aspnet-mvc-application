@@ -25,12 +25,21 @@ namespace MovieMania.Data
                 gm.MovieId
             });
 
-            modelBuilder.Entity<Actor_Movie>().HasOne(m => m.Movie).WithMany(am => am.Actors_Movies).HasForeignKey(m => m.MovieId);
-            modelBuilder.Entity<Actor_Movie>().HasOne(m => m.Actor).WithMany(am => am.Actors_Movies).HasForeignKey(m => m.ActorId);
+            modelBuilder.Entity<Actor_Movie>().HasOne(m => m.Movie).WithMany(am => am.ActorMovies).HasForeignKey(m => m.MovieId);
+            modelBuilder.Entity<Actor_Movie>().HasOne(m => m.Actor).WithMany(am => am.ActorMovies).HasForeignKey(m => m.ActorId);
 
 
-            modelBuilder.Entity<Genre_Movie>().HasOne(g => g.Movie).WithMany(gm => gm.Genremovies).HasForeignKey(g => g.MovieId);
-            modelBuilder.Entity<Genre_Movie>().HasOne(gm => gm.Genre).WithMany(m => m.Genremovies).HasForeignKey(gm => gm.GenreId);
+            modelBuilder.Entity<Genre_Movie>()
+                .HasOne(gm => gm.Movie)
+                .WithMany(m => m.GenreMovies)
+                .HasForeignKey(gm => gm.MovieId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Genre_Movie>()
+                .HasOne(gm => gm.Genre)
+                .WithMany(g => g.Genremovies)
+                .HasForeignKey(gm => gm.GenreId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
 

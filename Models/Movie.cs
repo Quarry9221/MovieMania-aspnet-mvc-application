@@ -11,19 +11,22 @@ namespace MovieMania.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
+        public string production_companies { get; set; }
         public string Description { get; set; }
-        public double Price { get; set; }
         public string ImageURL { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
         public MovieCategory MovieCategory { get; set; }
         public bool IsLiked { get; set; }
-        public List<Actor_Movie> Actors_Movies { get; set; }
+        public List<Actor_Movie> ActorMovies { get; set; }
         public Like Likes { get; set; }
-        public List<Genre_Movie> Genremovies { get; set; }
+        public List<Genre_Movie>? GenreMovies { get; set; }
         public int ProducerId { get; set; }
         [ForeignKey("ProducerId")]
         public Producer Producer { get; set; }
+
+        public float averageRate { get; set; }
+
+        public float popularity { get; set; }
     }
 
     public class MovieRatingPrediction

@@ -5,6 +5,7 @@
 }
 
 <div class="row">
+    
     <div class="col-md-8 offset-2">
         <div class="card mb-12">
             <div class="row g-0">
@@ -33,7 +34,7 @@
                         </p>
                         <p class="card-text"><b>Category: </b>@Model.MovieCategory</p>
                         <div class="card-text"><b>Genres:</b>
-                            @foreach (var genre in Model.Genremovies)
+                            @foreach (var genre in Model.GenreMovies)
                             {
                                 <p style="display:inline" asp-controller="Movies" asp-action="Details" asp-route-id="@genre.GenreId">@genre.Genre.Name </p>
                             }
@@ -48,7 +49,7 @@
                             <b>Actors: </b>
                             <hr />
                             <div class="row">
-                                @foreach (var actor in Model.Actors_Movies)
+                                @foreach (var actor in Model.ActorMovies)
                                 {
                                     <div class="column text-center">
                                         <img class="border-info rounded-circle" src="@actor.Actor.profilePictureURL" style="max-width: 150px" />

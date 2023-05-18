@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieMania.Data;
 
@@ -11,9 +12,11 @@ using MovieMania.Data;
 namespace MovieMania.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230518120834_EditMovie")]
+    partial class EditMovie
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -357,16 +360,6 @@ namespace MovieMania.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("averageRate")
-                        .HasColumnType("real");
-
-                    b.Property<float>("popularity")
-                        .HasColumnType("real");
-
-                    b.Property<string>("production_companies")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ProducerId");
@@ -483,13 +476,13 @@ namespace MovieMania.Migrations
             modelBuilder.Entity("MovieMania.Models.Actor_Movie", b =>
                 {
                     b.HasOne("MovieMania.Models.Actor", "Actor")
-                        .WithMany("ActorMovies")
+                        .WithMany("Actors_Movies")
                         .HasForeignKey("ActorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MovieMania.Models.Movie", "Movie")
-                        .WithMany("ActorMovies")
+                        .WithMany("Actors_Movies")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -502,15 +495,15 @@ namespace MovieMania.Migrations
             modelBuilder.Entity("MovieMania.Models.Genre_Movie", b =>
                 {
                     b.HasOne("MovieMania.Models.Genres", "Genre")
-                        .WithMany("Genremovies")
+                        .WithMany("GenreMovies")
                         .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MovieMania.Models.Movie", "Movie")
                         .WithMany("GenreMovies")
                         .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Genre");
@@ -569,17 +562,17 @@ namespace MovieMania.Migrations
 
             modelBuilder.Entity("MovieMania.Models.Actor", b =>
                 {
-                    b.Navigation("ActorMovies");
+                    b.Navigation("Actors_Movies");
                 });
 
             modelBuilder.Entity("MovieMania.Models.Genres", b =>
                 {
-                    b.Navigation("Genremovies");
+                    b.Navigation("GenreMovies");
                 });
 
             modelBuilder.Entity("MovieMania.Models.Movie", b =>
                 {
-                    b.Navigation("ActorMovies");
+                    b.Navigation("Actors_Movies");
 
                     b.Navigation("GenreMovies");
 

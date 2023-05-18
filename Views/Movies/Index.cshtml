@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "List of Movies";
 }
+<PackageReference Include="PagedList" Version="1.17.0" />
 <div class="row">
     @foreach (var item in Model)
     {
@@ -23,8 +24,17 @@
                     </div>
                     <div class="col-md-6">
                         <div class="card-body">
-                            <p class="card-text"><b>Description: </b>@item.Description</p>
-                            <p class="card-text"><b>Category: </b>@item.MovieCategory</p>
+                            <p class="card-text">
+                                <b>Genres: </b>
+                                @foreach (var genre in item.GenreMovies)
+                                {
+                                    <a href="@Url.Action("Details", "Movies", new { id = genre.GenreId })">@genre.Genre.Name</a>
+                                    if (!genre.Equals(item.GenreMovies.Last()))
+                                    {
+                                        <span>,</span>
+                                    }
+                                }
+                            </p>
                             <p class="card-text"><b>Release Date: </b>@item.StartDate.ToString("dd MMM yy")</p>
                         </div>
                     </div>
@@ -78,7 +88,6 @@
                                     <div class="card-details">
                                         <div class="card-body">
                                         <p class="card-text"><b>Name: @item.Name</b></p>
-                                            <p class="card-text"><b>Description: </b>@item.Description</p>
                                             <p class="card-text"><b>Category: </b>@item.MovieCategory</p>
                                             <p class="card-text"><b>Release Date: </b>@item.StartDate.ToString("dd MMM yy")</p>
                                         </div>
@@ -98,6 +107,7 @@
         }
     </div>
 </div>
+
 <style>
     .card-image {
         position: relative;

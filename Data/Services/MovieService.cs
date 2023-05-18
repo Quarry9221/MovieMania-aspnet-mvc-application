@@ -19,10 +19,10 @@ namespace MovieMania.Data.Services
             {
                 Name = data.Name,
                 Description = data.Description,
-                Price = data.Price,
+
                 ImageURL = data.ImageURL,
                 StartDate = data.StartDate,
-                EndDate = data.EndDate,
+
                 MovieCategory = data.MovieCategory,
                 ProducerId = data.ProducerId
             };
@@ -46,11 +46,21 @@ namespace MovieMania.Data.Services
         {
             var movieDetails = await _context.Movies
                 .Include(p => p.Producer)
-                .Include(am => am.Actors_Movies).ThenInclude(a => a.Actor).Include(gm => gm.Genremovies).ThenInclude(g => g.Genre)
+                .Include(am => am.ActorMovies).ThenInclude(a => a.Actor).Include(gm => gm.GenreMovies).ThenInclude(g => g.Genre)
                 .FirstOrDefaultAsync(n => n.Id == id);
 
             return movieDetails;
         }
+        public async Task<List<Movie>> GetAllMoviesAsync()
+        {
+            var movieDetails = await _context.Movies
+                .Include(p => p.Producer)
+                .Include(am => am.ActorMovies).ThenInclude(a => a.Actor).Include(gm => gm.GenreMovies).ThenInclude(g => g.Genre)
+                .ToListAsync();
+
+            return movieDetails;
+        }
+
 
         public async Task<NewMovieDropdownsVM> GetNewMovieDropdownsValues()
         {
@@ -71,15 +81,15 @@ namespace MovieMania.Data.Services
             {
                 dbMovie.Name = data.Name;
                 dbMovie.Description = data.Description;
-                dbMovie.Price = data.Price;
+                
                 dbMovie.ImageURL = data.ImageURL;
                 dbMovie.StartDate = data.StartDate;
-                dbMovie.EndDate = data.EndDate;
+
                 dbMovie.MovieCategory = data.MovieCategory;
-                dbMovie.ProducerId = data.ProducerId;
+
                 await _context.SaveChangesAsync();
             }
-
+            
             //Remove existing actors
             var existingActorsDb = _context.Actors_Movies.Where(n => n.MovieId == data.Id).ToList();
             _context.Actors_Movies.RemoveRange(existingActorsDb);

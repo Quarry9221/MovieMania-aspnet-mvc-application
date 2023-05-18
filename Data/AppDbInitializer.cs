@@ -99,10 +99,10 @@ namespace MovieMania.Data
                         {
                             Name = "Life",
                             Description = "This is the Life movie description",
-                            Price = 39.50,
+
                             ImageURL = "http://dotnethow.net/images/movies/movie-3.jpeg",
                             StartDate = DateTime.Now.AddDays(-10),
-                            EndDate = DateTime.Now.AddDays(10),
+
                             ProducerId = 3,
                             MovieCategory = MovieCategory.Documentary
                         },
@@ -110,10 +110,10 @@ namespace MovieMania.Data
                         {
                             Name = "The Shawshank Redemption",
                             Description = "This is the Shawshank Redemption description",
-                            Price = 29.50,
+
                             ImageURL = "http://dotnethow.net/images/movies/movie-1.jpeg",
                             StartDate = DateTime.Now,
-                            EndDate = DateTime.Now.AddDays(3),
+
                             ProducerId = 1,
                             MovieCategory = MovieCategory.Action
                         },
@@ -121,10 +121,8 @@ namespace MovieMania.Data
                         {
                             Name = "Ghost",
                             Description = "This is the Ghost movie description",
-                            Price = 39.50,
                             ImageURL = "http://dotnethow.net/images/movies/movie-4.jpeg",
                             StartDate = DateTime.Now,
-                            EndDate = DateTime.Now.AddDays(7),
                             ProducerId = 4,
                             MovieCategory = MovieCategory.Horror
                         },
@@ -132,10 +130,8 @@ namespace MovieMania.Data
                         {
                             Name = "Race",
                             Description = "This is the Race movie description",
-                            Price = 39.50,
                             ImageURL = "http://dotnethow.net/images/movies/movie-6.jpeg",
                             StartDate = DateTime.Now.AddDays(-10),
-                            EndDate = DateTime.Now.AddDays(-5),
                             ProducerId = 2,
                             MovieCategory = MovieCategory.Documentary
                         },
@@ -143,10 +139,8 @@ namespace MovieMania.Data
                         {
                             Name = "Scoob",
                             Description = "This is the Scoob movie description",
-                            Price = 39.50,
                             ImageURL = "http://dotnethow.net/images/movies/movie-7.jpeg",
                             StartDate = DateTime.Now.AddDays(-10),
-                            EndDate = DateTime.Now.AddDays(-2),
                             ProducerId = 3,
                             MovieCategory = MovieCategory.Cartoon
                         },
@@ -154,10 +148,8 @@ namespace MovieMania.Data
                         {
                             Name = "Cold Soles",
                             Description = "This is the Cold Soles movie description",
-                            Price = 39.50,
                             ImageURL = "http://dotnethow.net/images/movies/movie-8.jpeg",
                             StartDate = DateTime.Now.AddDays(3),
-                            EndDate = DateTime.Now.AddDays(20),
                             ProducerId = 5,
                             MovieCategory = MovieCategory.Drama
                         }
@@ -240,96 +232,79 @@ namespace MovieMania.Data
                         new Actor_Movie()
                         {
                             ActorId = 1,
-                            MovieId = 19
+                            MovieId = 1
                         },
                         new Actor_Movie()
                         {
                             ActorId = 3,
-                            MovieId = 19
+                            MovieId = 1
                         },
 
                          new Actor_Movie()
                         {
                             ActorId = 1,
-                            MovieId = 20
+                            MovieId = 2
                         },
                          new Actor_Movie()
                         {
                             ActorId = 4,
-                            MovieId = 20
+                            MovieId = 2
                         },
 
                         new Actor_Movie()
                         {
                             ActorId = 1,
-                            MovieId = 21
+                            MovieId = 3
                         },
                         new Actor_Movie()
                         {
                             ActorId = 2,
-                            MovieId = 21
+                            MovieId = 3
                         },
                         new Actor_Movie()
                         {
                             ActorId = 5,
-                            MovieId = 21
-                        },
-
-
-                        new Actor_Movie()
-                        {
-                            ActorId = 2,
-                            MovieId = 22
-                        },
-                        new Actor_Movie()
-                        {
-                            ActorId = 3,
-                            MovieId = 22
-                        },
-                        new Actor_Movie()
-                        {
-                            ActorId = 4,
-                            MovieId = 22
+                            MovieId = 3
                         },
 
 
                         new Actor_Movie()
                         {
                             ActorId = 2,
-                            MovieId = 23
+                            MovieId = 4
                         },
                         new Actor_Movie()
                         {
                             ActorId = 3,
-                            MovieId = 23
+                            MovieId = 4
                         },
                         new Actor_Movie()
                         {
                             ActorId = 4,
-                            MovieId = 23
-                        },
-                        new Actor_Movie()
-                        {
-                            ActorId = 5,
-                            MovieId = 23
+                            MovieId = 4
                         },
 
 
                         new Actor_Movie()
                         {
+                            ActorId = 2,
+                            MovieId = 5
+                        },
+                        new Actor_Movie()
+                        {
                             ActorId = 3,
-                            MovieId = 24
+                            MovieId = 5
                         },
                         new Actor_Movie()
                         {
                             ActorId = 4,
-                            MovieId = 24
+                            MovieId = 5
                         },
                         new Actor_Movie()
                         {
                             ActorId = 5,
-                            MovieId = 24
-                        },
+                            MovieId = 5
+                        }
                     });
                     context.SaveChanges();
                 }
@@ -340,37 +315,37 @@ namespace MovieMania.Data
                          new Genre_Movie()
                         {
                             GenreId = 1,
-                            MovieId = 20
+                            MovieId = 1
                         },
                          new Genre_Movie()
                         {
                             GenreId = 4,
-                            MovieId = 20
+                            MovieId = 1
                         },
                          new Genre_Movie()
                          {
                              GenreId = 5,
-                            MovieId = 21
+                            MovieId = 2
                          },
                          new Genre_Movie()
                          {
                              GenreId = 5,
-                            MovieId = 22
+                            MovieId = 3
                          },
                          new Genre_Movie()
                          {
                              GenreId = 6,
-                            MovieId = 22
+                            MovieId = 3
                          },
                          new Genre_Movie()
                          {
                              GenreId = 6,
-                            MovieId = 23
+                            MovieId = 4
                          },
                          new Genre_Movie()
                          {
                              GenreId = 6,
-                            MovieId = 24
+                            MovieId = 5
                          },
                     });
                     context.SaveChanges();

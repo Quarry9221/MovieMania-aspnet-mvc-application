@@ -28,7 +28,7 @@ namespace MovieMania.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var allMovies = await _service.GetAllAsync(n => n.Producer);
+            var allMovies = await _service.GetAllMoviesAsync();
             var likedMovies = await _service.GetLikedMoviesAsync(userId);
 
             ViewBag.LikedMovies = likedMovies;
