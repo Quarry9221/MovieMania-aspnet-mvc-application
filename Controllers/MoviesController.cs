@@ -57,7 +57,7 @@ namespace MovieMania.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Filter(string searchString)
         {
-            var allMovies = await _service.GetAllAsync(n => n.Cinema);
+            var allMovies = await _service.GetAllAsync(n => n.Producer);
             int f = 5;
 
             if (!string.IsNullOrEmpty(searchString))
