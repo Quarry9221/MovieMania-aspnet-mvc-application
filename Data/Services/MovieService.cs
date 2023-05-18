@@ -21,7 +21,6 @@ namespace MovieMania.Data.Services
                 Description = data.Description,
                 Price = data.Price,
                 ImageURL = data.ImageURL,
-                CinemaId = data.CinemaId,
                 StartDate = data.StartDate,
                 EndDate = data.EndDate,
                 MovieCategory = data.MovieCategory,
@@ -46,9 +45,8 @@ namespace MovieMania.Data.Services
         public async Task<Movie> GetMovieByIdAsync(int id)
         {
             var movieDetails = await _context.Movies
-                .Include(c => c.Cinema)
                 .Include(p => p.Producer)
-                .Include(am => am.Actors_Movies).ThenInclude(a => a.Actor)
+                .Include(am => am.Actors_Movies).ThenInclude(a => a.Actor).Include(gm => gm.Genremovies).ThenInclude(g => g.Genre)
                 .FirstOrDefaultAsync(n => n.Id == id);
 
             return movieDetails;
@@ -59,7 +57,6 @@ namespace MovieMania.Data.Services
             var response = new NewMovieDropdownsVM()
             {
                 Actors = await _context.Actors.OrderBy(n => n.Fullname).ToListAsync(),
-                Cinemas = await _context.Cinemas.OrderBy(n => n.Name).ToListAsync(),
                 Producers = await _context.Producers.OrderBy(n => n.Fullname).ToListAsync()
             };
 
@@ -76,7 +73,6 @@ namespace MovieMania.Data.Services
                 dbMovie.Description = data.Description;
                 dbMovie.Price = data.Price;
                 dbMovie.ImageURL = data.ImageURL;
-                dbMovie.CinemaId = data.CinemaId;
                 dbMovie.StartDate = data.StartDate;
                 dbMovie.EndDate = data.EndDate;
                 dbMovie.MovieCategory = data.MovieCategory;
@@ -101,5 +97,64 @@ namespace MovieMania.Data.Services
             }
             await _context.SaveChangesAsync();
         }
-    }
+        public  async Task<Movie> LikeMovieAsync(int movieId, string userId)
+        {
+            var movie = await _context.Movies.FindAsync(movieId);
+
+            var like = await _context.Likes
+                .FirstOrDefaultAsync(l => l.MovieId == movieId && l.UserId == userId);
+
+            if (like == null)
+            {
+                // User has not liked the movie, so create a new like record
+                like = new Like()
+                {
+                    MovieId = movieId,
+                    UserId = userId,
+                    IsLiked = true
+                };
+                movie.IsLiked = true;
+                await _context.Likes.AddAsync(like);
+                await _context.SaveChangesAsync();
+
+
+            }
+            else
+            {
+                // User has already liked the movie, so remove the like record
+                movie.IsLiked = false;
+                _context.Likes.Remove(like);
+                await _context.SaveChangesAsync();
+
+
+            }
+
+            return movie;
+
+        }
+        public async Task<Movie> СheckLikeMovieAsync(int movieId, string userId)
+        {
+            var movie = await _context.Movies.FindAsync(movieId);
+
+            var like = await _context.Likes
+                .FirstOrDefaultAsync(l => l.MovieId == movieId && l.UserId == userId);
+
+            return movie;
+        }
+
+        public async Task<IEnumerable<Movie>> GetLikedMoviesAsync(string userId)
+        {
+            // Retrieve the liked movies for the specified user
+            var likedMovies = await _context.Likes
+                .Where(l => l.UserId == userId && l.IsLiked)
+                .Select(l => l.Movie)
+                .ToListAsync();
+
+            return likedMovies;
+        }
+
+
+
+
+     }
 }

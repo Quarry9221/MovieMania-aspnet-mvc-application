@@ -265,7 +265,22 @@ namespace MovieMania.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("MovieMania.Models.Cinema", b =>
+            modelBuilder.Entity("MovieMania.Models.Genre_Movie", b =>
+                {
+                    b.Property<int>("GenreId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GenreId", "MovieId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("GenreMovies");
+                });
+
+            modelBuilder.Entity("MovieMania.Models.Genres", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -273,21 +288,41 @@ namespace MovieMania.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Logo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cinemas");
+                    b.ToTable("Genres");
+                });
+
+            modelBuilder.Entity("MovieMania.Models.Like", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsLiked")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("MovieMania.Models.Movie", b =>
@@ -297,9 +332,6 @@ namespace MovieMania.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CinemaId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -311,6 +343,9 @@ namespace MovieMania.Migrations
                     b.Property<string>("ImageURL")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsLiked")
+                        .HasColumnType("bit");
 
                     b.Property<int>("MovieCategory")
                         .HasColumnType("int");
@@ -329,8 +364,6 @@ namespace MovieMania.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CinemaId");
 
                     b.HasIndex("ProducerId");
 
@@ -360,6 +393,35 @@ namespace MovieMania.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Producers");
+                });
+
+            modelBuilder.Entity("MovieMania.Models.Rates", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Timestamp")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Rates");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -432,23 +494,70 @@ namespace MovieMania.Migrations
                     b.Navigation("Movie");
                 });
 
-            modelBuilder.Entity("MovieMania.Models.Movie", b =>
+            modelBuilder.Entity("MovieMania.Models.Genre_Movie", b =>
                 {
-                    b.HasOne("MovieMania.Models.Cinema", "Cinema")
-                        .WithMany("Movies")
-                        .HasForeignKey("CinemaId")
+                    b.HasOne("MovieMania.Models.Genres", "Genre")
+                        .WithMany("Genremovies")
+                        .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MovieMania.Models.Movie", "Movie")
+                        .WithMany("Genremovies")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Genre");
+
+                    b.Navigation("Movie");
+                });
+
+            modelBuilder.Entity("MovieMania.Models.Like", b =>
+                {
+                    b.HasOne("MovieMania.Models.Movie", "Movie")
+                        .WithOne("Likes")
+                        .HasForeignKey("MovieMania.Models.Like", "MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieMania.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MovieMania.Models.Movie", b =>
+                {
                     b.HasOne("MovieMania.Models.Producer", "Producer")
                         .WithMany("Movies")
                         .HasForeignKey("ProducerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Cinema");
-
                     b.Navigation("Producer");
+                });
+
+            modelBuilder.Entity("MovieMania.Models.Rates", b =>
+                {
+                    b.HasOne("MovieMania.Models.Movie", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieMania.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MovieMania.Models.Actor", b =>
@@ -456,14 +565,19 @@ namespace MovieMania.Migrations
                     b.Navigation("Actors_Movies");
                 });
 
-            modelBuilder.Entity("MovieMania.Models.Cinema", b =>
+            modelBuilder.Entity("MovieMania.Models.Genres", b =>
                 {
-                    b.Navigation("Movies");
+                    b.Navigation("Genremovies");
                 });
 
             modelBuilder.Entity("MovieMania.Models.Movie", b =>
                 {
                     b.Navigation("Actors_Movies");
+
+                    b.Navigation("Genremovies");
+
+                    b.Navigation("Likes")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MovieMania.Models.Producer", b =>

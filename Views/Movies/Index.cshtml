@@ -23,11 +23,9 @@
                     </div>
                     <div class="col-md-6">
                         <div class="card-body">
-                            <p class="card-text">@item.Description</p>
-                            <p class="card-text"><b>Cinema: </b>@item.Cinema.Name</p>
+                            <p class="card-text"><b>Description: </b>@item.Description</p>
                             <p class="card-text"><b>Category: </b>@item.MovieCategory</p>
                             <p class="card-text"><b>Release Date: </b>@item.StartDate.ToString("dd MMM yy")</p>
-
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -38,9 +36,20 @@
                                 </a>
                                 @if (User.Identity.IsAuthenticated)
                                 {
-                                    <form method="post" action="/Movies/Like">
-                                        <a class="btn btn-success text-white"><i class="bi bi-emoji-heart-eyes"></i>Like</a>
-                                    </form>
+                                    @if (item.IsLiked)
+                                    {
+                                        <form method="post" action="/Movies/Like">
+                                            <input type="hidden" name="id" value="@item.Id" /> <!-- add the movie id to the form data -->
+                                            <button type="submit" class="btn btn-danger text-white"><i class="bi bi-emoji-heart-eyes"></i>Remove Like</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form method="post" action="/Movies/Like">
+                                            <input type="hidden" name="id" value="@item.Id" /> <!-- add the movie id to the form data -->
+                                            <button type="submit" class="btn btn-success text-white"><i class="bi bi-emoji-heart-eyes"></i>Like</button>
+                                        </form>
+                                    }
                                 }
                                 
                             </p>
@@ -50,4 +59,78 @@
             </div>
         </div>
     }
+    <div>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <h1>recommendations of @User.Identity.Name:</h1>
+            <div class="row">
+                @foreach (var item in ViewBag.LikedMovies)
+                {
+
+                        <div class="card mb-3" style="width: 287px;">
+                            <div class="row g-0">
+                                <div>
+                                    <div class="card-image"
+                                 style="background-image: url('@item.ImageURL')"
+                                 onmouseover="showDetails(this)"
+                                 onmouseout="hideDetails(this)">
+                                    </div>
+                                    <div class="card-details">
+                                        <div class="card-body">
+                                        <p class="card-text"><b>Name: @item.Name</b></p>
+                                            <p class="card-text"><b>Description: </b>@item.Description</p>
+                                            <p class="card-text"><b>Category: </b>@item.MovieCategory</p>
+                                            <p class="card-text"><b>Release Date: </b>@item.StartDate.ToString("dd MMM yy")</p>
+                                        </div>
+                                        <div class="card-footer">
+                                            <p class="card-text">
+                                                <a class="btn btn-outline-primary float-right" asp-action="Details" asp-route-id="@item.Id">
+                                                    <i class="bi bi-eye-fill"></i> Show Details
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                }
+            </div>
+        }
+    </div>
 </div>
+<style>
+    .card-image {
+        position: relative;
+        height: 388px;
+        background-size: cover;
+        background-position: center;
+        cursor: pointer;
+    }
+
+    .card-details {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: none;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 20px;
+        text-align: center;
+
+    }
+
+    .card-image:hover .card-details {
+        display: block;
+    }
+</style>
+
+<script>
+    function showDetails(element) {
+        element.parentNode.querySelector('.card-details').style.display = 'block';
+    }
+    function hideDetails(element) {
+        element.parentNode.querySelector('.card-details').style.display = 'none';
+    }
+</script>

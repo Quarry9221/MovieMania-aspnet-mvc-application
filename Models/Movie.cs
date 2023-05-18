@@ -2,6 +2,7 @@
 using MovieMania.Data.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TMDbLib.Objects.General;
 
 namespace MovieMania.Models
 {
@@ -16,16 +17,19 @@ namespace MovieMania.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public MovieCategory MovieCategory { get; set; }
-
+        public bool IsLiked { get; set; }
         public List<Actor_Movie> Actors_Movies { get; set; }
-
-        //cinema
-        public int CinemaId { get; set; }
-        [ForeignKey("CinemaId")]
-        public Cinema Cinema { get; set; }
-
+        public Like Likes { get; set; }
+        public List<Genre_Movie> Genremovies { get; set; }
         public int ProducerId { get; set; }
         [ForeignKey("ProducerId")]
         public Producer Producer { get; set; }
+    }
+
+    public class MovieRatingPrediction
+    {
+        public float Label;
+        
+        public float Score;
     }
 }

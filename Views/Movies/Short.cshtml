@@ -5,7 +5,7 @@
 <div class="row">
     @foreach (var item in Model)
     {
-        <div class="border-primary" style="background: grey">
+        <div class="border-primary" >
             <div class="card" style="max-width: 1080px;">
                 <div class="row g-0">
                         <div class="">
@@ -17,10 +17,15 @@
                             </p>
                             <div class="col-md-6">
                                 <img src="@item.ImageURL" width="10%" alt="@item.Name">
+                            <form method="post" action="/Movies/Like">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-danger text-white"><i class="bi "></i>Remove Like</button>
+                            </form>
                             </div>
+                            
                         </div>
                 </div>
             </div>
-        </div>
+        </div>  
     }
 </div>

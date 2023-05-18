@@ -10,5 +10,10 @@ namespace MovieMania.Data.Services
         Task<NewMovieDropdownsVM> GetNewMovieDropdownsValues();
         Task AddNewMovieAsync(NewMovieVM data);
         Task UpdateMovieAsync(NewMovieVM data);
+        Task<Movie> LikeMovieAsync(int movieId, string userId);
+
+        Task<Movie> СheckLikeMovieAsync(int movieId, string userId);
+
+        Task<IEnumerable<Movie>> GetLikedMoviesAsync(string userId);
     }
 }

@@ -22,12 +22,8 @@
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
-                        <p class="card-text">@Model.Description</p>
+                        <p class="card-text"><b>Description: </b>@Model.Description</p>
                         <p class="card-text">
-                            <b>Cinema: </b>
-                            <a asp-controller="Cinemas" asp-action="Details" asp-route-id="@Model.CinemaId">
-                                @Model.Cinema.Name
-                            </a>
                         </p>
                         <p class="card-text">
                             <b>Producer: </b>
@@ -36,6 +32,14 @@
                             </a>
                         </p>
                         <p class="card-text"><b>Category: </b>@Model.MovieCategory</p>
+                        <div class="card-text"><b>Genres:</b>
+                            @foreach (var genre in Model.Genremovies)
+                            {
+                                <p style="display:inline" asp-controller="Movies" asp-action="Details" asp-route-id="@genre.GenreId">@genre.Genre.Name </p>
+                            }
+                        </div>
+                        <p></p>
+                        <p class="card-text"><b>Жанри: </b>Замінити на оцінку</p>
                         <p class="card-text"><b>Start Date: </b>Замінити на оцінку</p>
                         <p class="card-text"><b>End Date: </b>Замінити на ще щось</p>
                         <p class="card-text ">
@@ -67,6 +71,14 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <h1>Simmilar films:</h1>
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
         </div>
     </div>
 </div>
