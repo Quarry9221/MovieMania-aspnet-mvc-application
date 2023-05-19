@@ -11,7 +11,11 @@ using MovieMania.Data.ViewModel;
 using MovieMania.Models;
 using System.Data.Common;
 using System.Security.Claims;
-
+using PagedList;
+using NUnit.Framework;
+using Xunit;
+using Moq;
+using System.Linq.Expressions;
 
 namespace MovieMania.Controllers
 {
@@ -25,19 +29,32 @@ namespace MovieMania.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int page = 1)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var allMovies = await _service.GetAllMoviesAsync();
             var likedMovies = await _service.GetLikedMoviesAsync(userId);
 
             ViewBag.LikedMovies = likedMovies;
-            return View(allMovies);
+
+            const int pageSize = 9;
+            if (page < 1)
+            {
+                page = 1;
+            }
+            int recsCount = allMovies.Count();
+            var paging = new Paging(recsCount, page, pageSize);
+            int recSkip = (page - 1) * pageSize;
+            var data = allMovies.Skip(recSkip).Take(paging.PageSize).ToList();
+            this.ViewBag.Paging = paging;
+
+
+            return View(data);
         }
         public async Task<IActionResult> Short()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            
+
             var allMovies = await _service.GetAllAsync(n => n.Producer);
 
             List<Movie> result = new List<Movie>();
@@ -116,10 +133,10 @@ namespace MovieMania.Controllers
                     new DatabaseLoader.Column() {Name = "Score", Type = System.Data.DbType.Int32},
                     new DatabaseLoader.Column() {Name = "Timestamp", Type = System.Data.DbType.Int32},
                 };
-            
-            
+
+
             MLContext mlContext = new MLContext();
-             
+
 
             var connectionString = @"Data Source=DESKTOP-U8UTJMF;Initial Catalog=mania-movie-app;Integrated Security=True;Connect Timeout=30; TrustServerCertificate=True";
             var connection = new SqlConnection(connectionString);
@@ -135,8 +152,8 @@ namespace MovieMania.Controllers
 
             var preview = data.Preview();
 
-            
-           // var databaseSource = new DatabaseSource(factory, @"Data Source=DESKTOP-U8UTJMF;Initial Catalog=mania-movie-app;Integrated Security=True;Connect Timeout=30", "SELECT * FROM Rates");
+
+            // var databaseSource = new DatabaseSource(factory, @"Data Source=DESKTOP-U8UTJMF;Initial Catalog=mania-movie-app;Integrated Security=True;Connect Timeout=30", "SELECT * FROM Rates");
 
             //var trainingView = mlContext.Data.CreateDatabaseLoader<Rates>().Load(databaseSource);
             //DatabaseLoader loader = mLContext.Data.CreateDatabaseLoader<Rates>();
@@ -145,5 +162,5 @@ namespace MovieMania.Controllers
             return View(preview);
         }
     }
-    
+
 }

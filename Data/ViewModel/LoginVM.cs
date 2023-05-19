@@ -12,7 +12,11 @@ namespace MovieMania.Data.ViewModel
         [Required(ErrorMessage = "Email address is required")]
         public string EmailAddress { get; set; }
 
-        [Required]
+        
+        [Display(Name = "Password")]
+        [Required(ErrorMessage = "Password is wrong")]
+
+        
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }

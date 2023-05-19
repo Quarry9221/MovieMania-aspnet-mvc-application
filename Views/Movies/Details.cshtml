@@ -32,7 +32,6 @@
                                 @Model.Producer.Fullname
                             </a>
                         </p>
-                        <p class="card-text"><b>Category: </b>@Model.MovieCategory</p>
                         <div class="card-text"><b>Genres:</b>
                             @foreach (var genre in Model.GenreMovies)
                             {
@@ -40,9 +39,9 @@
                             }
                         </div>
                         <p></p>
-                        <p class="card-text"><b>Жанри: </b>Замінити на оцінку</p>
-                        <p class="card-text"><b>Start Date: </b>Замінити на оцінку</p>
-                        <p class="card-text"><b>End Date: </b>Замінити на ще щось</p>
+                        <p class="card-text"><b>Start Date: </b>@Model.StartDate.ToString("dd MMM yy")</p>
+                        <p class="card-text"><b>Average rating: </b>@Model.averageRate</p>
+                        <p class="card-text"><b>Popularity: </b>@Model.popularity</p>
                         <p class="card-text ">
                         </p>
                         <p class="card-text">

@@ -7,6 +7,8 @@ namespace MovieMania.Models
         [Key]
         public int Id { get; set; }
 
+        public int TMDBId { get; set; }
+
         public string Name { get; set; }
 
         public List<Genre_Movie>? Genremovies { get; set; }

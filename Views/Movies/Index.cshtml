@@ -1,6 +1,15 @@
-﻿@model IEnumerable<Movie>
+﻿@using PagedList
+@using PagedList.Mvc;
+
+@model IEnumerable<Movie>
 @{
-    ViewData["Title"] = "List of Movies";
+    Paging paging = new Paging();
+    int pageNo = 0;
+    if (ViewBag.Paging != null)
+    {
+        paging = ViewBag.Paging;
+        pageNo = paging.CurrentPage;
+    }
 }
 <PackageReference Include="PagedList" Version="1.17.0" />
 <div class="row">
@@ -14,7 +23,7 @@
                             <p class="card-text">
                                 <h5 class="card-title">
                                     @item.Name
-                                    <a class="text-white float-right"><i class="bi bi-pencil-square"></i></a>
+                                    <a class="text-white float-right"><i></i></a>
                                 </h5>
                             </p>
                         </div>
@@ -28,7 +37,7 @@
                                 <b>Genres: </b>
                                 @foreach (var genre in item.GenreMovies)
                                 {
-                                    <a href="@Url.Action("Details", "Movies", new { id = genre.GenreId })">@genre.Genre.Name</a>
+                                    <p>@genre.Genre.Name</p>
                                     if (!genre.Equals(item.GenreMovies.Last()))
                                     {
                                         <span>,</span>
@@ -36,6 +45,7 @@
                                 }
                             </p>
                             <p class="card-text"><b>Release Date: </b>@item.StartDate.ToString("dd MMM yy")</p>
+                            <p class="card-text"><b>Average rating: </b>@item.averageRate</p>
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -69,6 +79,37 @@
             </div>
         </div>
     }
+    <div class = "container">
+        @if(paging.TotalPages > 0)
+        {
+            <ul class="pagination justify-content-end">
+                @if (paging.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", "Movies", new { page = 1 })">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", "Movies", new { page = (paging.CurrentPage - 1) })">Previous</a>
+                    </li>
+                }
+                @for (var pge = paging.StartPage; pge <= paging.EndPage; pge++)
+                {
+                    <li class="page-item @(pge == paging.CurrentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Movies", new { page = pge })">@pge</a>
+                    </li>
+                }
+                @if(paging.CurrentPage < paging.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", "Movies", new { page = (paging.CurrentPage + 1) })">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", "Movies", new { page = paging.TotalPages })">Last</a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
     <div>
         @if (User.Identity.IsAuthenticated)
         {
@@ -88,7 +129,6 @@
                                     <div class="card-details">
                                         <div class="card-body">
                                         <p class="card-text"><b>Name: @item.Name</b></p>
-                                            <p class="card-text"><b>Category: </b>@item.MovieCategory</p>
                                             <p class="card-text"><b>Release Date: </b>@item.StartDate.ToString("dd MMM yy")</p>
                                         </div>
                                         <div class="card-footer">

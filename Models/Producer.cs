@@ -7,6 +7,8 @@ namespace MovieMania.Models
         [Key]
         public int Id { get; set; }
         [Display(Name = "Profile Picture")]
+
+        public int TMDBId { get; set; }
         public string profilePictureURL { get; set; }
         [Display(Name = "Full Name")]
         public string Fullname { get; set; }

@@ -3,6 +3,7 @@ using MovieMania.Data;
 using MovieMania.Data.Services;
 using MovieMania.Models;
 using MovieMania.Data.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MovieMania.Controllers
 {
@@ -13,6 +14,7 @@ namespace MovieMania.Controllers
         {
             _service = service;
         }
+        [Authorize(Roles = "Admin")]
         public async Task< IActionResult> Index()
         {
             var data = await _service.GetAllAsync();
@@ -41,7 +43,8 @@ namespace MovieMania.Controllers
             }
             return View(actorDetails);
         }
-
+        
+        [Authorize(Roles = "Admin")]
         public async Task <IActionResult> Edit(int id)
         {
             var actorDetails = await _service.GetByIdAsync(id);

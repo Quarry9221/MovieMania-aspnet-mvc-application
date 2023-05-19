@@ -15,7 +15,6 @@ namespace MovieMania.Models
         public string Description { get; set; }
         public string ImageURL { get; set; }
         public DateTime StartDate { get; set; }
-        public MovieCategory MovieCategory { get; set; }
         public bool IsLiked { get; set; }
         public List<Actor_Movie> ActorMovies { get; set; }
         public Like Likes { get; set; }

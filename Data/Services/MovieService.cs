@@ -23,7 +23,6 @@ namespace MovieMania.Data.Services
                 ImageURL = data.ImageURL,
                 StartDate = data.StartDate,
 
-                MovieCategory = data.MovieCategory,
                 ProducerId = data.ProducerId
             };
             await _context.Movies.AddAsync(newMovie);
@@ -85,7 +84,6 @@ namespace MovieMania.Data.Services
                 dbMovie.ImageURL = data.ImageURL;
                 dbMovie.StartDate = data.StartDate;
 
-                dbMovie.MovieCategory = data.MovieCategory;
 
                 await _context.SaveChangesAsync();
             }

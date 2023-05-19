@@ -104,7 +104,6 @@ namespace MovieMania.Data
                             StartDate = DateTime.Now.AddDays(-10),
 
                             ProducerId = 3,
-                            MovieCategory = MovieCategory.Documentary
                         },
                         new Movie()
                         {
@@ -115,7 +114,6 @@ namespace MovieMania.Data
                             StartDate = DateTime.Now,
 
                             ProducerId = 1,
-                            MovieCategory = MovieCategory.Action
                         },
                         new Movie()
                         {
@@ -124,7 +122,6 @@ namespace MovieMania.Data
                             ImageURL = "http://dotnethow.net/images/movies/movie-4.jpeg",
                             StartDate = DateTime.Now,
                             ProducerId = 4,
-                            MovieCategory = MovieCategory.Horror
                         },
                         new Movie()
                         {
@@ -133,7 +130,6 @@ namespace MovieMania.Data
                             ImageURL = "http://dotnethow.net/images/movies/movie-6.jpeg",
                             StartDate = DateTime.Now.AddDays(-10),
                             ProducerId = 2,
-                            MovieCategory = MovieCategory.Documentary
                         },
                         new Movie()
                         {
@@ -142,7 +138,6 @@ namespace MovieMania.Data
                             ImageURL = "http://dotnethow.net/images/movies/movie-7.jpeg",
                             StartDate = DateTime.Now.AddDays(-10),
                             ProducerId = 3,
-                            MovieCategory = MovieCategory.Cartoon
                         },
                         new Movie()
                         {
@@ -151,7 +146,6 @@ namespace MovieMania.Data
                             ImageURL = "http://dotnethow.net/images/movies/movie-8.jpeg",
                             StartDate = DateTime.Now.AddDays(3),
                             ProducerId = 5,
-                            MovieCategory = MovieCategory.Drama
                         }
                     });
                     context.SaveChanges();
@@ -227,86 +221,7 @@ namespace MovieMania.Data
                 //Actors & Movies
                 if (!context.Actors_Movies.Any())
                 {
-                    context.Actors_Movies.AddRange(new List<Actor_Movie>()
-                    {
-                        new Actor_Movie()
-                        {
-                            ActorId = 1,
-                            MovieId = 1
-                        },
-                        new Actor_Movie()
-                        {
-                            ActorId = 3,
-                            MovieId = 1
-                        },
 
-                         new Actor_Movie()
-                        {
-                            ActorId = 1,
-                            MovieId = 2
-                        },
-                         new Actor_Movie()
-                        {
-                            ActorId = 4,
-                            MovieId = 2
-                        },
-
-                        new Actor_Movie()
-                        {
-                            ActorId = 1,
-                            MovieId = 3
-                        },
-                        new Actor_Movie()
-                        {
-                            ActorId = 2,
-                            MovieId = 3
-                        },
-                        new Actor_Movie()
-                        {
-                            ActorId = 5,
-                            MovieId = 3
-                        },
-
-
-                        new Actor_Movie()
-                        {
-                            ActorId = 2,
-                            MovieId = 4
-                        },
-                        new Actor_Movie()
-                        {
-                            ActorId = 3,
-                            MovieId = 4
-                        },
-                        new Actor_Movie()
-                        {
-                            ActorId = 4,
-                            MovieId = 4
-                        },
-
-
-                        new Actor_Movie()
-                        {
-                            ActorId = 2,
-                            MovieId = 5
-                        },
-                        new Actor_Movie()
-                        {
-                            ActorId = 3,
-                            MovieId = 5
-                        },
-                        new Actor_Movie()
-                        {
-                            ActorId = 4,
-                            MovieId = 5
-                        },
-                        new Actor_Movie()
-                        {
-                            ActorId = 5,
-                            MovieId = 5
-                        }
-                    });
-                    context.SaveChanges();
                 }
                 if (!context.GenreMovies.Any())
                 {
