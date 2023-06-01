@@ -1,11 +1,11 @@
 ﻿@model Movie
-
+@inject MovieMania.Data.Services.MovieService _movieService
 @{
     ViewData["Title"] = "Movie details";
 }
 
 <div class="row">
-    
+
     <div class="col-md-8 offset-2">
         <div class="card mb-12">
             <div class="row g-0">
@@ -26,39 +26,21 @@
                         <p class="card-text"><b>Description: </b>@Model.Description</p>
                         <p class="card-text">
                         </p>
-                        <p class="card-text">
-                            <b>Producer: </b>
-                            <a asp-controller="Producers" asp-action="Details" asp-route-id="@Model.ProducerId">
-                                @Model.Producer.Fullname
-                            </a>
-                        </p>
-                        <div class="card-text"><b>Genres:</b>
+                        <div class="card-text">
+                            <b>Genres:</b>
                             @foreach (var genre in Model.GenreMovies)
                             {
                                 <p style="display:inline" asp-controller="Movies" asp-action="Details" asp-route-id="@genre.GenreId">@genre.Genre.Name </p>
                             }
                         </div>
                         <p></p>
-                        <p class="card-text"><b>Start Date: </b>@Model.StartDate.ToString("dd MMM yy")</p>
+                        <p class="card-text"><b>Producer: </b>@Model.Producer.Fullname</p>
+                        <p class="card-text"><b>Release Date: </b>@Model.StartDate.ToString("dd MMM yy")</p>
                         <p class="card-text"><b>Average rating: </b>@Model.averageRate</p>
+                        <p class="card-text"><b>Production company: </b>@Model.production_companies</p>
                         <p class="card-text"><b>Popularity: </b>@Model.popularity</p>
                         <p class="card-text ">
                         </p>
-                        <p class="card-text">
-                            <b>Actors: </b>
-                            <hr />
-                            <div class="row">
-                                @foreach (var actor in Model.ActorMovies)
-                                {
-                                    <div class="column text-center">
-                                        <img class="border-info rounded-circle" src="@actor.Actor.profilePictureURL" style="max-width: 150px" />
-                                        <br />
-                                        <a asp-controller="Actors" asp-action="Details" asp-route-id="@actor.ActorId">@actor.Actor.Fullname</a>
-                                    </div>
-                                }
-                            </div>
-                        </p>
-
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -68,17 +50,56 @@
                                 Back to List
                             </a>
                         </p>
+                        <p class="card-text">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                @if (Model.IsLiked)
+                                {
+                                    <form method="post" action="/Movies/Like">
+                                        <input type="hidden" name="id" value="@Model.Id" />
+                                        <button type="submit" class="btn btn-danger text-white"><i class="bi bi-emoji-heart-eyes"></i>Remove Like</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form method="post" action="/Movies/Like">
+                                        <input type="hidden" name="id" value="@Model.Id" />
+                                        <button type="submit" class="btn btn-success text-white"><i class="bi bi-emoji-heart-eyes"></i>Like</button>
+                                    </form>
+                                }
+                            }
+                        </p>
                     </div>
                 </div>
+                <div>
+                    @{
+                        var similarMovies = await _movieService.GetSimmiliarMovies(Model.Id);
+                    }
+                    @if (similarMovies.Any())
+                    {
+                        <div class="row">
+                            <div class="col-md-8 offset-2">
+                                <h4>Similar Movies</h4>
+                                <div class="card-group">
+                                    @foreach (var similarMovie in similarMovies)
+                                    {
+                                        <div class="card">
+                                            <a href="@Url.Action("Details", "Movies", new { id = similarMovie.Id })">
+                                                <img src="@similarMovie.ImageURL" width="80%" alt="@similarMovie.Name">
+                                            </a>
+                                            <div class="card-body">
+                                                <h5 class="card-title">@similarMovie.Name</h5>
+                                                <p class="card-text">Genres: @string.Join(", ", similarMovie.GenreMovies.Select(g => g.Genre.Name))</p>
+                                                <p class="card-text">Average rating: @similarMovie.averageRate</p>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
-        </div>
-    </div>
-    <h1>Simmilar films:</h1>
-    <div class="card" style="width: 18rem;">
-        <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
         </div>
     </div>
 </div>

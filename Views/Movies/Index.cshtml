@@ -113,7 +113,7 @@
     <div>
         @if (User.Identity.IsAuthenticated)
         {
-            <h1>recommendations of @User.Identity.Name:</h1>
+            <h4>Liked movies</h4>
             <div class="row">
                 @foreach (var item in ViewBag.LikedMovies)
                 {

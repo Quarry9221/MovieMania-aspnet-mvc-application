@@ -27,11 +27,4 @@ namespace MovieMania.Models
 
         public float popularity { get; set; }
     }
-
-    public class MovieRatingPrediction
-    {
-        public float Label;
-        
-        public float Score;
-    }
 }

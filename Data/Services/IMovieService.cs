@@ -14,5 +14,8 @@ namespace MovieMania.Data.Services
         Task<Movie> LikeMovieAsync(int movieId, string userId);
         Task<Movie> СheckLikeMovieAsync(int movieId, string userId);
         Task<IEnumerable<Movie>> GetLikedMoviesAsync(string userId);
+
+        Task<List<Movie>> GetSimmiliarMovies(int id);
+
     }
 }

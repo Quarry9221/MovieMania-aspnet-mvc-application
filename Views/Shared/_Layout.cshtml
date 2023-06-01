@@ -54,7 +54,11 @@
         </main>
     </div>
     <div>
-        <a class="navbar-brand" asp-controller="Movies" asp-action="Recommendation">MovieMania</a>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <h6><a class="navbar-brand" asp-controller="Movies" asp-action="Recommendation">You will get lucky</a></h6>
+        }
+        
     <div/>
     <footer class="border-top footer text-muted">
         <div class="container">

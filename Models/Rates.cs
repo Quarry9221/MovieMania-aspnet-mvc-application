@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.ML.Data;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MovieMania.Models
 {
@@ -6,15 +7,24 @@ namespace MovieMania.Models
     {
         public int Id { get; set; }
 
-        public int MovieId { get; set; }
-        [ForeignKey("MovieId")]
-        public Movie Movie { get; set; }
+        [ColumnName("UserId"), LoadColumn(0)]
         public string UserId { get; set; }
-
         [ForeignKey("UserId")]
-        public ApplicationUser User { get; set; }
-        public int Score { get; set; }
 
-        public int Timestamp { get; set; }
+        [ColumnName("MovieId"), LoadColumn(1)]
+        public int MovieId { get; set; }
+        
+        [ForeignKey("MovieId")]
+        
+        [ColumnName("Label"), LoadColumn(2)]
+        public float Label { get; set; }
+
+    }
+
+    public class MovieRatingPrediction
+    {
+        public float Label;
+
+        public float Score;
     }
 }

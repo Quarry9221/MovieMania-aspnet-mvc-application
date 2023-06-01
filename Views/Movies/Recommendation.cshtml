@@ -1,43 +1,76 @@
-﻿@model IEnumerable<Movie>
+﻿@model Movie
+
 @{
-    ViewData["Title"] = "List of Movies";
+    ViewData["Title"] = "Movie details";
 }
+
 <div class="row">
-    @foreach (var item in Model)
-    {
-        <div class="col-md-4 col-xs-6 border-primary mb-3">
-            <div class="card mb-3" style="max-width: 540px;">
-                <div class="row g-0">
-                    <div class="col-md-12">
-                        <div class="card-header text-white bg-info">
-                            <p class="card-text">
-                                <h5 class="card-title">
-                                    @item.Name
-                                    <a class="text-white float-right"><i class="bi bi-pencil-square"></i></a>
-                                </h5>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <img src="@item.ImageURL" width="100%" alt="@item.Name">
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-body">
-                            <p class="card-text"><b>Description: </b>@item.Description</p>
-                            <p class="card-text"><b>Release Date: </b>@item.StartDate.ToString("dd MMM yy")</p>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="card-footer ">
-                            <p class="card-text">
-                                <a class="btn btn-outline-primary float-right" asp-action="Details" asp-route-id="@item.Id">
-                                    <i class="bi bi-eye-fill"></i> Show Details
-                                </a>
-                            </p>
-                        </div>
+
+    <div class="col-md-8 offset-2">
+        <div class="card mb-12">
+            <div class="row g-0">
+                <div class="col-md-12">
+                    <div class="card-header text-white bg-info">
+                        <p class="card-text">
+                            <h5 class="card-title">
+                                @Model.Name
+                            </h5>
+                        </p>
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <img src="@Model.ImageURL" width="100%" alt="@Model.Name">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <p class="card-text"><b>Description: </b>@Model.Description</p>
+                        <p class="card-text">
+                        </p>
+                        <div class="card-text">
+                            <b>Genres:</b>
+                            @foreach (var genre in Model.GenreMovies)
+                            {
+                                <p style="display:inline" asp-controller="Movies" asp-action="Details" asp-route-id="@genre.GenreId">@genre.Genre.Name </p>
+                            }
+                        </div>
+                        <p></p>
+                        <p class="card-text"><b>Producer: </b>@Model.Producer.Fullname</p>
+                        <p class="card-text"><b>Release Date: </b>@Model.StartDate.ToString("dd MMM yy")</p>
+                        <p class="card-text"><b>Average rating: </b>@Model.averageRate</p>
+                        <p class="card-text"><b>Production company: </b>@Model.production_companies</p>
+                        <p class="card-text"><b>Popularity: </b>@Model.popularity</p>
+                        <p class="card-text ">
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card-footer">
+                        <p class="card-text">
+                            <a class="btn btn-outline-primary float-right" asp-action="Index">
+                                Back to List
+                            </a>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                @if (Model.IsLiked)
+                                {
+                                    <form method="post" action="/Movies/Like">
+                                        <input type="hidden" name="id" value="@Model.Id" />
+                                        <button type="submit" class="btn btn-danger text-white"><i class="bi bi-emoji-heart-eyes"></i>Remove Like</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form method="post" action="/Movies/Like">
+                                        <input type="hidden" name="id" value="@Model.Id" /> 
+                                        <button type="submit" class="btn btn-success text-white"><i class="bi bi-emoji-heart-eyes"></i>Like</button>
+                                    </form>
+                                }
+                            }
+                        </p>
+                    </div>
+                </div>
+                @ViewBag.MyMessage
             </div>
         </div>
-    }
+    </div>
 </div>

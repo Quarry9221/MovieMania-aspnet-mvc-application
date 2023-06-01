@@ -2,30 +2,41 @@
 @{
     ViewData["Title"] = "List of Movies";
 }
+
 <div class="row">
     @foreach (var item in Model)
     {
-        <div class="border-primary" >
+        <div class="border-primary">
             <div class="card" style="max-width: 1080px;">
                 <div class="row g-0">
-                        <div class="">
-                            <p class="card-text">
-                                <h5 class="card-title">
-                                    @item.Name
-                                    <a class="text-white float-right"><i class="bi bi-pencil-square"></i></a>
-                                </h5>
-                            </p>
-                            <div class="col-md-6">
-                                <img src="@item.ImageURL" width="10%" alt="@item.Name">
-                            <form method="post" action="/Movies/Like">
+                    <div class="">
+                        <p class="card-text">
+                            <h5 class="card-title">
+                                @item.Name
+                                <a class="text-white float-right"><i class="bi bi-pencil-square"></i></a>
+                            </h5>
+                        </p>
+                        <div class="col-md-6">
+                            <img src="@item.ImageURL" width="10%" alt="@item.Name">
+                            <form method="post" action="/Movies/Rate">
                                 <input type="hidden" name="id" value="@item.Id" />
-                                <button type="submit" class="btn btn-danger text-white"><i class="bi "></i>Remove Like</button>
+                                <div class="form-group">
+                                    <label for="rating">Rate:</label>
+                                    <select name="rating" class="form-control" required>
+                                        <option value="">Select rating</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Rate</button>
                             </form>
-                            </div>
-                            
                         </div>
+                    </div>
                 </div>
             </div>
-        </div>  
+        </div>
     }
 </div>

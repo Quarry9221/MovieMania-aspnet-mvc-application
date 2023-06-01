@@ -16,6 +16,9 @@ using NUnit.Framework;
 using Xunit;
 using Moq;
 using System.Linq.Expressions;
+using Microsoft.ML.Trainers;
+using Microsoft.AspNet.Identity;
+using System.Data.Entity;
 
 namespace MovieMania.Controllers
 {
@@ -74,8 +77,7 @@ namespace MovieMania.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Filter(string searchString)
         {
-            var allMovies = await _service.GetAllAsync(n => n.Producer);
-            int f = 5;
+            var allMovies = await _service.GetAllMoviesAsync();
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -86,6 +88,23 @@ namespace MovieMania.Controllers
             }
 
             return View("Index", allMovies);
+        }
+        [HttpPost]
+        public IActionResult Rate(int id, int rating)
+        {
+            // Retrieve the movie with the given id from the database
+            var movie =  _service.GetMovieByIdAsync(id);
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            // Save the rating to the database or perform any other necessary logic
+            // ...
+
+            // Redirect back to the movie list page
+            return RedirectToAction("Index");
         }
 
         [AllowAnonymous]
@@ -108,58 +127,106 @@ namespace MovieMania.Controllers
         [Authorize]
         public async Task<IActionResult> Recommendation()
         {
-            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //var allMovies = await _service.GetAllAsync(n => n.Producer);
-
-            //List<Movie> result = new List<Movie>();
-
-            //foreach (var movie in allMovies)
-            //{
-            //    var like = await _service.СheckLikeMovieAsync(movie.Id, userId);
-
-            //    if (like.IsLiked == true)
-            //    {
-            //        result.Add(movie);
-            //    }
-            //}
-            //return View(result);
-
+            string userId = User.Identity.GetUserId();
 
             var loadColumns = new DatabaseLoader.Column[]
                 {
-                    new DatabaseLoader.Column() {Name = "Id", Type = System.Data.DbType.Int32},
                     new DatabaseLoader.Column() {Name = "UserId", Type = System.Data.DbType.String},
                     new DatabaseLoader.Column() {Name = "MovieId", Type = System.Data.DbType.Int32},
-                    new DatabaseLoader.Column() {Name = "Score", Type = System.Data.DbType.Int32},
-                    new DatabaseLoader.Column() {Name = "Timestamp", Type = System.Data.DbType.Int32},
+                    new DatabaseLoader.Column() {Name = "Label", Type = System.Data.DbType.Single},
                 };
-
-
-            MLContext mlContext = new MLContext();
-
 
             var connectionString = @"Data Source=DESKTOP-U8UTJMF;Initial Catalog=mania-movie-app;Integrated Security=True;Connect Timeout=30; TrustServerCertificate=True";
             var connection = new SqlConnection(connectionString);
             var factory = DbProviderFactories.GetFactory(connection);
 
+            MLContext mlContext = new MLContext();
             var loader = mlContext.Data.CreateDatabaseLoader(loadColumns);
 
 
 
             var dbSource = new DatabaseSource(factory, connectionString, "SELECT * FROM Rates");
 
-            var data = loader.Load(dbSource);
+            IDataView data = loader.Load(dbSource);
 
-            var preview = data.Preview();
+            //var data = loader.Load(dbSource);
 
+            //var preview = data.Preview();
 
+            var testTrainSplit = mlContext.Data.TrainTestSplit(data, testFraction: 0.2);
+
+            IDataView Trainset = testTrainSplit.TrainSet;
+            IDataView Testset = testTrainSplit.TestSet;
+
+            ITransformer model = BuildAndTrainModel(mlContext,Trainset);
+
+            EvaluateModel(mlContext, Testset, model);
+
+            Rates Rated = UseModelForSinglePrediction(mlContext, model);
+
+            ITransformer BuildAndTrainModel(MLContext mlContext, IDataView trainingDataView)
+            {
+                IEstimator<ITransformer> estimator = mlContext.Transforms.Conversion.MapValueToKey(outputColumnName: "UserIdEncoded", inputColumnName: "UserId")
+                .Append(mlContext.Transforms.Conversion.MapValueToKey(outputColumnName: "MovieIdEncoded", inputColumnName: "MovieId"));
+
+                var options = new MatrixFactorizationTrainer.Options
+                {
+                    MatrixColumnIndexColumnName = "UserIdEncoded",
+                    MatrixRowIndexColumnName = "MovieIdEncoded",
+                    LabelColumnName = "Label",
+                    NumberOfIterations = 20,
+                    ApproximationRank = 100
+                };
+
+                var trainerEstimator = estimator.Append(mlContext.Recommendation().Trainers.MatrixFactorization(options));
+                Console.WriteLine("=============== Training the model ===============");
+                ITransformer model = trainerEstimator.Fit(trainingDataView);
+
+                return model;
+            }
+
+            void EvaluateModel(MLContext mlContext, IDataView testDataView, ITransformer model)
+            {
+                Console.WriteLine("=============== Evaluating the model ===============");
+                var prediction = model.Transform(testDataView);
+                var metrics = mlContext.Regression.Evaluate(prediction, labelColumnName: "Label", scoreColumnName: "Score");
+                Console.WriteLine("Root Mean Squared Error : " + metrics.RootMeanSquaredError.ToString());
+                Console.WriteLine("RSquared: " + metrics.RSquared.ToString());
+            }
+
+            Rates UseModelForSinglePrediction(MLContext mlContext, ITransformer model)
+            {
+                Random rand = new Random();
+                int rndnumb = rand.Next(10, 1600);
+                Console.WriteLine("=============== Making a prediction ===============");
+                var predictionEngine = mlContext.Model.CreatePredictionEngine<Rates, MovieRatingPrediction>(model);
+
+                var testInput = new Rates { UserId = userId, MovieId = rndnumb };
+
+                var movieRatingPrediction = predictionEngine.Predict(testInput);
+                Console.WriteLine(movieRatingPrediction.Score);
+                if (Math.Round(movieRatingPrediction.Score, 1) > 3.5)
+                {
+                    ViewBag.MyMessage = "This movie is recommended for you";
+                }
+                else
+                {
+                    ViewBag.MyMessage = "This movie is not recommended for you";
+                }
+                return testInput;
+            }
+            var movieDetail = await _service.GetMovieByIdAsync(Rated.MovieId);
+
+            var features = data.Schema.Select(col => col.Name).Where(colName => colName != "Score").ToArray();
+
+            //var pipeline = mlContext.Transforms.Text.FeaturizeText("Text",)
             // var databaseSource = new DatabaseSource(factory, @"Data Source=DESKTOP-U8UTJMF;Initial Catalog=mania-movie-app;Integrated Security=True;Connect Timeout=30", "SELECT * FROM Rates");
 
             //var trainingView = mlContext.Data.CreateDatabaseLoader<Rates>().Load(databaseSource);
             //DatabaseLoader loader = mLContext.Data.CreateDatabaseLoader<Rates>();
 
 
-            return View(preview);
+            return View(movieDetail);
         }
     }
 

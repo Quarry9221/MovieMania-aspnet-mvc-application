@@ -2,6 +2,8 @@
 using MovieMania.Data.Base;
 using MovieMania.Data.ViewModel;
 using MovieMania.Models;
+using TMDbLib.Objects.Movies;
+using Movie = MovieMania.Models.Movie;
 
 namespace MovieMania.Data.Services
 {
@@ -161,8 +163,31 @@ namespace MovieMania.Data.Services
             return likedMovies;
         }
 
+        public async Task<List<Movie>> GetSimmiliarMovies(int id)
+        {
+            int count = 4;
+            var movie = await _context.Movies
+                .Include(gm => gm.GenreMovies)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
+            if (movie == null)
+            {
+                return new List<Movie>(); // Return an empty list if the movie is not found
+            }
 
+            var similarMovies = await _context.Movies
+                .Include(gm => gm.GenreMovies)
+                .Where(m =>
+                    m.Id != id && // Exclude the current movie
+                    m.GenreMovies.Any(gm => movie.GenreMovies.Select(g => g.GenreId).Contains(gm.GenreId)) && // Filter by shared genres
+                    Math.Abs(m.averageRate - movie.averageRate) <= 0.5 // Check for similar average rating within a tolerance of 0.5 (modify as needed)
+                )
+                .OrderByDescending(m => m.averageRate) // Order by average rating
+                .Take(4) // Limit the number of similar movies to 4 (modify as needed)
+                .ToListAsync();
 
-     }
+            return similarMovies;
+        }
+
+    }
 }

@@ -4,6 +4,7 @@ using MovieMania.Data.Services;
 using Microsoft.AspNetCore.Identity;
 using MovieMania.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Logging.Debug;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 builder.Services.AddScoped<IActorService, ActorService>();
 builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<MovieMania.Data.Services.MovieService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddMemoryCache();
